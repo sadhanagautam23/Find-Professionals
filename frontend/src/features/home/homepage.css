@@ -1,0 +1,124 @@
+/* Reset basic styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #ffffff;
+}
+
+.header {
+  position: fixed;         /* Stick to the top */
+  top: 0;
+  left: 0;
+  width: 100%;             /* Full width */
+  background-color: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  padding: 16px 60px;      /* Wide horizontal spacing */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 600;
+  color: #222222;
+}
+
+.navbar {
+  display: flex;
+  gap: 32px; /* space between links */
+}
+
+.navbar a {
+  text-decoration: none;
+  font-size: 16px;
+  color: #555555;
+  transition: color 0.3s;
+}
+
+.navbar a:hover {
+  color: #000000;
+}
+.search-bar-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;   /* Center horizontally */
+  padding: 20px 60px;
+
+}
+
+.search-input {
+  flex: 1;
+  height: 50px;
+
+  max-width: 600px;
+  padding: 12px 16px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-right: none;
+  border-radius: 8px 0 0 8px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.search-input:focus {
+  border-color: #6200ee;
+}
+
+.search-button {
+  padding: 12px 24px;
+  background-color: #6200ee;
+  color: white;
+  font-size: 16px;
+  border: 1px solid #6200ee;
+  border-radius: 0 8px 8px 0;
+  cursor: pointer;
+  height: 50px;
+  transition: backgroud;
+}
+
+.profiles-section {
+  padding: 2rem;
+  background-color: #f9f9f9;
+}
+
+.profiles-section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+  text-align: center;
+}
+
+.profiles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.profiles-grid > div {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.profiles-grid > div:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.profiles-grid p {
+  margin: 0.4rem 0;
+  font-size: 1rem;
+  color: #444;
+  word-break: break-word;
+}
