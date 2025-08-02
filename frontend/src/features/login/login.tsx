@@ -36,7 +36,11 @@ export default function Login(){
             console.log(res);
             localStorage.setItem("token", res.data.token);
             localStorage.setItem('currentUser', JSON.stringify(res.data.user));
-            navigate('/home');
+            if (!res.data.profileCompleted) {
+            navigate("/profile-setup");
+            } else {
+            navigate("/dashboard");
+            }
         }).catch(
             (error:AxiosError) =>{
                 console.log(error);

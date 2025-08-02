@@ -1,4 +1,14 @@
 //Initialization
+/* import dotenv from 'dotenv';
+dotenv.config();
+console.log('Env PORT:', process.env.PORT);
+console.log('Env MONGO_URI:', process.env.MONGO_URI ? 'FOUND' : 'NOT FOUND');
+ */
+
+
+
+
+
 import app from './app.js';
 import mongoose from 'mongoose';
 
@@ -32,3 +42,5 @@ async function run() {
   }
 }
 run().catch(console.dir);
+
+

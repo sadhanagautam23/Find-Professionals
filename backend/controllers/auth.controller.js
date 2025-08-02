@@ -47,8 +47,9 @@ export async function login(req, res) {
             { userId: user._id },
             process.env.JWT_SECRET, 
             { expiresIn: '1h' });
+          const profileCompleted = Boolean(user.category && user.skills && user.category.length > 0 && user.skills.length > 0);
 
-            res.json({ message: 'Login successful',user, token });
+            res.json({ message: 'Login successful',user, token,profileCompleted });
   
     } catch (e) {
         console.error(e);
@@ -66,27 +67,22 @@ export async function login(req, res) {
             res.status(500).json({ message: 'Server error', error: e.message });
     }
 }
-    export async function getByUsername (req, res) {
-        try {
-            const { username } = req.body;
-            const users = await User.find({ username }).select('-password'); 
-            res.status(200).json({ users });
-        } catch (e) {
-            console.error(e);
-            res.status(500).json({ message: 'Server error', error: e.message });
-    }
-
-
-   
-}  
+    
 
 export async function searchUsers (req, res) {
   try {
+    console.log(req);
     const query = req.query.q?.toString() || "";
 
     const users = await User.find({
-      username: { $regex: query, $options: "i" }  // case-insensitive search
-    });
+  $or: [
+    { username: { $regex: query, $options: "i" } },  
+    { category: { $regex: query, $options: "i" } },                 // match category
+    { subcategory: { $regex: query, $options: "i" } } ,        // username match (case-insensitive)
+    { skills: { $elemMatch: { $regex: query, $options: "i" } } } // any skill matches
+  ]
+});
+
 
     res.json({ users });
   } catch (error) {
@@ -94,27 +90,29 @@ export async function searchUsers (req, res) {
   }
 };
 
-
-
-
-/* export const searchUsers = async (req, res) => {
-  const { query } = req.query;
-
-  if (!query) return res.status(400).json({ message: "Query is required" });
+export async function userProfile(req, res) {
+  console.log("req.body >>>", req.body); // Should show your sent data
+   
+  const { category,subcategory, skills } = req.body;  // no subCategory here
+  
 
   try {
-    const users = await User.find({
-      $or: [
-        { username: { $regex: query, $options: 'i' } }
-      ]
-    }).select('-password');
+    const user = await User.findByIdAndUpdate(
+      req.user.userId,
+      {
+        category,
+        subcategory, 
+        skills,
+        profileCompleted: true,
+      },
+      { new: true }
+    );
 
-    res.status(200).json({ users });
+    res.json({ message: "Profile updated", user });
   } catch (err) {
-    res.status(500).json({ message: "Search failed", error: err.message });
+    res.status(500).json({ message: "Error updating profile" });
   }
-} */
-
+}
 
 
 

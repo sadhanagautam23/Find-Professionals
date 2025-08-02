@@ -15,9 +15,31 @@ const userSchema = new Schema({
     createdAt: {
         type: Date,
         default: Date.now
-    }
+    },
+
+   profileCompleted: {
+  type: Boolean,
+  default: false,
+},
+   category: {
+    type: String,
+    enum: [
+      "Developer", "Designer", "Marketer", "Writer", 
+      "Finance", "Engineer"
+    ],
+    default: undefined
+  },
+
+  subcategory: String,
+
+  skills: {
+    type: [String],
+    default: undefined
+  }
 
 });
+
+
 
 const User = model('User', userSchema);
 export default User;

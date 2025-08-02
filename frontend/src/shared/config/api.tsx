@@ -17,5 +17,9 @@ export const getUserSearchApi = (username: string) => {
     return axiosInstance.get(`/auth/searchUsers?q=${username}`);
 };
 
+export const userProfile = (data: { category: string; subcategory: string ,skills: string[] }) => {
+    return axiosInstance.post('/auth/userProfile', data );
+};
+
 
 

@@ -1,5 +1,7 @@
 
 import { useEffect, useState } from 'react';
+import Header from '../../shared/components/header/Header';
+import { FiSearch } from "react-icons/fi";
 import { getUserListApi, getUserSearchApi } from '../../shared/config/api'
 
 interface User {
@@ -22,6 +24,7 @@ export default function Homepage() {
   /* const [user, setUser] = useState<User[]>([]); */
   const [loading, setLoading] = useState<boolean>(true);
   const [search, setSearch] = useState<string>('');
+  const [category, setCategory] = useState<string>('');
   const [userList, setUserList] = useState<User[]>([]);
   const [error, setError] = useState<string | null>(null);
 
@@ -36,14 +39,32 @@ export default function Homepage() {
       setLoading(false);
     });
 
-  }, []);
+  }, [search]);
 
   function handleSearch(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSearch(search);
+    setCategory('');
 
     setLoading(true);
     getUserSearchApi(search).then(
+      (res: AxiosResponse<UserListResponse>) => {
+        setUserList(res.data.users)
+        console.log(res);
+      }
+    ).finally(() => {
+      setLoading(false);
+    });
+  }
+
+  function handleCategoryClick(event: React.MouseEvent<HTMLButtonElement>) {
+    const selectedCategory = event.currentTarget.textContent || '';
+    setCategory(selectedCategory);
+
+    
+
+    setLoading(true);
+    getUserSearchApi(selectedCategory).then(
       (res: AxiosResponse<UserListResponse>) => {
         setUserList(res.data.users)
       }
@@ -52,27 +73,42 @@ export default function Homepage() {
     });
   }
 
+  const catagories = [
+             "All",
+             "Developer", "Designer", "Marketer", 
+            "Finance", "Legal", "Engineer"
+          ]
+
   return (
     <>
-      <header className="header">
-        <div className="logo">ProFinder</div>
-        <nav className="navbar">
-          <a href="#home">Home</a>
-          <a href="#professionals">Professionals</a>
-          <a href="#about">About</a>
-          <a href="#contact">Contact</a>
-        </nav>
-      </header>
+      <Header />
+      <div className = "wholeWrap">
       <form className="search-bar-wrapper" onSubmit={handleSearch}>
         <input
           type="text"
-          placeholder="Search for professionals..."
+          placeholder="Search"
           className="search-input"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <button className="search-button" type="submit">Search</button>
+        <button className="search-button" type="submit">
+          <FiSearch className="search-icon" />
+        </button>
       </form>
+      
+
+      <div className="category-buttons">
+          {catagories.map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              className={`category-button ${category === cat ? 'active' : ''}`}
+              onClick={handleCategoryClick }
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
 
 
 
@@ -86,8 +122,10 @@ export default function Homepage() {
             </div>
           ))}
 
+
         </div>
       </section>
+      </div>
     </>
   )
 }

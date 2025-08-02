@@ -32,7 +32,7 @@ export default function Register() {
         console.log(res);
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('currentUser', JSON.stringify(res.data.user));
-        navigate('/login');
+        navigate('/');
       })
       .catch((error: AxiosError) => {
         console.error(error);
