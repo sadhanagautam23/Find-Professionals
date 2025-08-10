@@ -1,5 +1,6 @@
 
 import { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import Header from '../../shared/components/header/Header';
 import { FiSearch } from "react-icons/fi";
 import { getUserListApi, getUserSearchApi } from '../../shared/config/api'
@@ -8,6 +9,7 @@ interface User {
   _id: string;
   username: string;
   email: string;
+  
 
 }
 
@@ -34,6 +36,7 @@ export default function Homepage() {
     getUserSearchApi(search).then(
       (res: AxiosResponse<UserListResponse>) => {
         setUserList(res.data.users)
+        console.log(res)
       }
     ).finally(() => {
       setLoading(false);
@@ -72,6 +75,8 @@ export default function Homepage() {
       setLoading(false);
     });
   }
+
+  const navigate = useNavigate();
 
   const catagories = [
              "All",
@@ -114,9 +119,9 @@ export default function Homepage() {
 
       <section className="profiles-section">
         <h2>Recently Uploaded Professionals</h2>
-        <div className="profiles-grid">
+        <div className="profiles-grid" >
           {userList.map((user: User) => (
-            <div key={user._id} >
+            <div key={user._id} onClick = { () => navigate(`/profile/${user._id}`) }>
               <p> {user.username}</p>
               <p> {user.email}</p>
             </div>

@@ -1,8 +1,95 @@
 import React from 'react';
 import './Profile.css';
+import { useParams } from 'react-router-dom';
+import { useState, useEffect} from 'react';
+import { getProfileById, updateProfile } from '../../shared/config/api';
 import Header from '../../shared/components/header/Header';
+import type { AxiosResponse } from 'axios';
+import About from './components/about';
+import type { User } from '../../shared/Interface/User';
+import Experience from './components/Experience';
+import Skills from './components/Skillls';
+
+
+
+
+
+interface ApiResponse {
+  user: User;
+}
+
+
 
 export default function Profile() {
+  
+
+  const [loading, setLoading] = useState<boolean>(true);
+  const [currentUserId, setCurrentUserId] = useState('');
+  const [userData, setUserData] = useState<User | null>(null);
+ 
+  const [isCurrentUser, setCurrentUser] = useState<boolean>(false);
+  const { id: profileUserId } = useParams<{ id: string }>();
+  
+
+
+
+ 
+  
+
+
+useEffect(() => {
+  if (!profileUserId) return;
+
+  getProfileById(profileUserId)
+    .then((res: AxiosResponse<ApiResponse>) => {
+     
+      setUserData(res.data.user);
+    })
+    .catch((error) => {
+      console.error('Failed to fetch profile user data:', error);
+    });
+}, [profileUserId]);
+
+
+
+
+
+
+
+useEffect(() => {
+  if (!profileUserId) return;
+
+  function fetch() {
+    const currentUserStr = localStorage.getItem('currentUser');
+    if (!currentUserStr) {
+      setCurrentUser(false);
+      return;
+    }
+
+    const currentUser = JSON.parse(currentUserStr);
+    const userIdFromStorage = currentUser._id || ''; // or 'id' depending on your user object structure
+
+    
+
+    setCurrentUserId(userIdFromStorage);
+
+    if (userIdFromStorage === profileUserId) {
+      setCurrentUser(true);
+    } else {
+      setCurrentUser(false);
+    }
+  }
+
+  fetch();
+}, [profileUserId]);
+
+
+
+
+  console.log('isCurrentUser:', isCurrentUser);
+ 
+
+
   return (
     <>
       <Header/>
@@ -16,7 +103,7 @@ export default function Profile() {
           <img src="../../src/assets/photo.png" alt="Avatar" className="avatar" />
 
           <div className="user-info">
-            <h2>Alex Morgan</h2>
+            <h2>{userData?.username || 'No name'}</h2>
             <p>245 connections</p>
           </div>
 
@@ -36,38 +123,65 @@ export default function Profile() {
       </div>
 
       {/* About Section */}
-      <div className="profile-section">
-        <h3>About</h3>
-        <p>
-          I'm a dedicated goal-oriented individual with a high energy level, honed communication skills, strong organization skills,
-          and meticulous attention to detail. Currently I'm a UX/UI designer. I'm experienced in UX/UI design in Figma software and Behance.
-          I'm passionate about designing and front-end development. I absolutely love what I do and passionate about being better every day.
-        </p>
-      </div>
+    <About
+      aboutText={userData?.about}
+      isCurrentUser={isCurrentUser}
+      onSave={async (newAbout) => {
+       
+        try {
+          await updateProfile(profileUserId!, { about: newAbout });
+         
+          setUserData((prev) => (prev ? { ...prev, about: newAbout } : null));
+        } catch (error) {
+          console.error('Failed to update about:', error);
+        }
+      }}
+    />
+
 
       {/* Experience Section */}
-      <div className="profile-section">
-        <h3>Experience</h3>
-        <ul>
-          <li><strong>UX/UI Designer</strong> – Freelance (2023 – Present)</li>
-          <li><strong>Design Intern</strong> – Pixel Labs (2022 – 2023)</li>
-          <li><strong>Front-End Developer</strong> – CodeNest Studio (2021 – 2022)</li>
-        </ul>
-      </div>
+<Experience
+  experiences={userData?.experiences || []}
+  isCurrentUser={isCurrentUser}
+  onAdd={async (newExp) => {
+    const res = await updateProfile(profileUserId!, {
+      experiences: [...(userData?.experiences || []), newExp],
+    });
+    setUserData((prev) =>
+      prev ? { ...prev, experiences: [...(prev.experiences || []), newExp] } : null
+    );
+  }}
+  onEdit={async (id, updatedExp) => {
+    const updatedList = (userData?.experiences || []).map((exp) =>
+      exp._id === id ? updatedExp : exp
+    );
+    await updateProfile(profileUserId!, { experiences: updatedList });
+    setUserData((prev) =>
+      prev ? { ...prev, experiences: updatedList } : null
+    );
+  }}
+/>
+
 
       {/* Skills Section */}
-      <div className="profile-section">
-        <h3>Skills</h3>
-        <ul className="skills-list">
-          <li>Figma</li>
-          <li>Adobe XD</li>
-          <li>React.js</li>
-          <li>HTML/CSS</li>
-          <li>JavaScript</li>
-          <li>Wireframing</li>
-          <li>User Research</li>
-        </ul>
-      </div>
+      <Skills
+        skills={userData?.skills}
+        isCurrentUser={isCurrentUser}
+        onAddSkill={async (skill) => {
+          if (!userData) return;
+          const updatedSkills = [...(userData.skills || []), skill];
+          await updateProfile(userData._id, { skills: updatedSkills });
+          setUserData({ ...userData, skills: updatedSkills });
+        }}
+        onDeleteSkill={async (skill) => {
+          if (!userData) return;
+          const updatedSkills = (userData.skills || []).filter(s => s !== skill);
+          await updateProfile(userData._id, { skills: updatedSkills });
+          setUserData({ ...userData, skills: updatedSkills });
+        }}
+      />
+
+
     </>
   );
 }

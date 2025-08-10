@@ -90,7 +90,7 @@ export async function searchUsers (req, res) {
   }
 };
 
-export async function userProfile(req, res) {
+export async function profileSetup(req, res) {
   console.log("req.body >>>", req.body); // Should show your sent data
    
   const { category,subcategory, skills } = req.body;  // no subCategory here
@@ -113,6 +113,23 @@ export async function userProfile(req, res) {
     res.status(500).json({ message: "Error updating profile" });
   }
 }
+
+
+
+export async function profile(req, res) {
+  const userId = req.params.id;
+  const updateData = req.body;
+
+  try {
+    const user = await User.findByIdAndUpdate(userId, updateData, { new: true });
+    res.json({ user });
+  } catch (error) {
+    res.status(500).json({ message: 'Update failed' });
+  }
+}
+
+
+
 
 
 

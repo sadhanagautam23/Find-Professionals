@@ -37,7 +37,7 @@ function App() {
           <Dashboard />
         </AuthGuard>
       } />
-      <Route path='/profile' element={
+      <Route path='/profile/:id' element={
         <AuthGuard>
           <Profile />
         </AuthGuard>

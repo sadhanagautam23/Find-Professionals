@@ -1,3 +1,4 @@
+import type { User } from '../Interface/User';
 import axiosInstance from './axiosInstance';
 
 
@@ -19,6 +20,23 @@ export const getUserSearchApi = (username: string) => {
 
 export const userProfile = (data: { category: string; subcategory: string ,skills: string[] }) => {
     return axiosInstance.post('/auth/userProfile', data );
+};
+
+export const updateAbout = (about: string) => {
+    return axiosInstance.put('/auth/updateAbout', { about });
+};
+
+export const getCurrentUser = () => {
+    return axiosInstance.get('/auth/currentUser');
+};
+
+
+export const getProfileById = (id: string) => {
+    return axiosInstance.get(`/auth/profile/${id}`);
+};
+
+export const updateProfile = (id: string, updateData: Partial<User>) => {
+  return axiosInstance.put(`/auth/profile/${id}`, updateData);
 };
 
 
