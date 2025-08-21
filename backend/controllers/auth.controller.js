@@ -46,7 +46,7 @@ export async function login(req, res) {
         const token = jwt.sign(
             { userId: user._id },
             process.env.JWT_SECRET, 
-            { expiresIn: '1h' });
+            { expiresIn: '1hr' });
           const profileCompleted = Boolean(user.category && user.skills && user.category.length > 0 && user.skills.length > 0);
 
             res.json({ message: 'Login successful',user, token,profileCompleted });
@@ -69,26 +69,27 @@ export async function login(req, res) {
 }
     
 
-export async function searchUsers (req, res) {
+export async function searchUsers(req, res) {
   try {
-    console.log(req);
     const query = req.query.q?.toString() || "";
 
     const users = await User.find({
-  $or: [
-    { username: { $regex: query, $options: "i" } },  
-    { category: { $regex: query, $options: "i" } },                 // match category
-    { subcategory: { $regex: query, $options: "i" } } ,        // username match (case-insensitive)
-    { skills: { $elemMatch: { $regex: query, $options: "i" } } } // any skill matches
-  ]
-});
-
+      $or: [
+        { username: { $regex: query, $options: "i" } },
+        { category: { $regex: query, $options: "i" } },
+        { subcategory: { $regex: query, $options: "i" } },
+        { skills: { $elemMatch: { $regex: query, $options: "i" } } }
+      ]
+    }).select("_id username email subcategory about avatar");
 
     res.json({ users });
   } catch (error) {
+    console.error("Search failed:", error);
     res.status(500).json({ message: "Search failed", error });
   }
-};
+}
+
+
 
 export async function profileSetup(req, res) {
   console.log("req.body >>>", req.body); // Should show your sent data

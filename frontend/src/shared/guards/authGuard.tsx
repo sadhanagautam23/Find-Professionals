@@ -7,15 +7,19 @@ interface AuthGuardProps{
 
 
 const AuthGuard = ({ children }: AuthGuardProps) => {
-    const token = localStorage.getItem('token');
-    const user = localStorage.getItem('currentUser');
-    if (!token || !user){
-    return <Navigate to = "/" replace/>
-    }else{
+  const token = localStorage.getItem('token');
+  const user = localStorage.getItem('currentUser');
 
-        return children;
-    }
+  const hasValidAuth = token && token !== 'null' && token !== 'undefined'
+                    && user && user !== 'null' && user !== 'undefined';
+
+  if (!hasValidAuth) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
 };
+
 
 export default AuthGuard;
 

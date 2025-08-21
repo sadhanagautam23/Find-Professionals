@@ -9,6 +9,9 @@ interface User {
   _id: string;
   username: string;
   email: string;
+  subcategory?: string;        
+  about?: string;         
+      
   
 
 }
@@ -18,6 +21,7 @@ interface UserListResponse {
 }
 import './homepage.css';
 import type { AxiosResponse } from 'axios';
+import Suggestions from '../../shared/components/Suggestions';
 
 
 
@@ -63,9 +67,7 @@ export default function Homepage() {
   function handleCategoryClick(event: React.MouseEvent<HTMLButtonElement>) {
     const selectedCategory = event.currentTarget.textContent || '';
     setCategory(selectedCategory);
-
-    
-
+ 
     setLoading(true);
     getUserSearchApi(selectedCategory).then(
       (res: AxiosResponse<UserListResponse>) => {
@@ -86,7 +88,9 @@ export default function Homepage() {
 
   return (
     <>
+    <div className="profile-layout">
       <Header />
+         
       <div className = "wholeWrap">
       <form className="search-bar-wrapper" onSubmit={handleSearch}>
         <input
@@ -116,20 +120,36 @@ export default function Homepage() {
         </div>
 
 
-
+{/* ==== React Component ==== */}
       <section className="profiles-section">
         <h2>Recently Uploaded Professionals</h2>
-        <div className="profiles-grid" >
+        <div className="profiles-grid">
           {userList.map((user: User) => (
-            <div key={user._id} onClick = { () => navigate(`/profile/${user._id}`) }>
-              <p> {user.username}</p>
-              <p> {user.email}</p>
+            <div
+              key={user._id}
+              className="profile-c"
+              onClick={() => navigate(`/profile/${user._id}`)}
+            >
+              <div className="profile-avatar">
+                <img
+                  src="../../src/assets/photo.png"
+                  alt={user.username}
+                />
+              </div>
+              <div className="profile-i">
+                <h3>{user.username}</h3>
+                <p className="role">{user.subcategory}</p>
+              
+              <p className="description">{user.about}</p>
+              </div>
             </div>
           ))}
-
-
         </div>
       </section>
+      </div>
+      <div className="profile-right">
+        <Suggestions />
+      </div>
       </div>
     </>
   )

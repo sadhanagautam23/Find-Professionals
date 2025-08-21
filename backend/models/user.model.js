@@ -43,7 +43,18 @@ const userSchema = new Schema({
     default: undefined
   },
 
-  experiences: [ExperienceSchema]
+  experiences: [ExperienceSchema],
+
+  profilePicture: {
+    url:{
+      type: String, 
+    },
+    public_id:{
+      type: String,
+    }
+  
+  },
+
 
 
 });

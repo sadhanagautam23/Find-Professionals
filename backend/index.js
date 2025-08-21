@@ -6,9 +6,6 @@ console.log('Env MONGO_URI:', process.env.MONGO_URI ? 'FOUND' : 'NOT FOUND');
  */
 
 
-
-
-
 import app from './app.js';
 import mongoose from 'mongoose';
 

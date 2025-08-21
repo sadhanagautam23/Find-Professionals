@@ -14,6 +14,6 @@ export function authMiddleware(req, res, next) {
         req.user = decoded; 
         next(); 
     } catch (e) {
-        return res.status(403).json({ message: "Forbidden: Invalid token" });
+        return res.status(401).json({ message: "Forbidden: Invalid token" });
     }
 }
