@@ -2,12 +2,12 @@ node version:  22.16.0
 react version : 19.1.0
 
 setup 
-frontend:
-cd frontend
-npm install
+frontend:<br>
+cd frontend<br>
+npm install<br>
 npm run dev
 
-backend:
-cd backend
-npm install 
+backend:<br>
+cd backend<br>
+npm install <br>
 npm run dev
